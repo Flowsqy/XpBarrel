@@ -24,6 +24,10 @@ public class OldBarrelStorageLoader {
 
     private Object yamlObject;
 
+    public OldBarrelStorageLoader() {
+        yamlObject = null;
+    }
+
     public void load(@NotNull File dataFolder, @NotNull Logger logger) {
         final var oldStorage = new File(dataFolder, "storages.yml");
         if (!oldStorage.exists() || !oldStorage.isFile()) {
@@ -38,10 +42,6 @@ public class OldBarrelStorageLoader {
             return;
         }
         yamlObject = yaml.load(inputStream);
-        boolean a = true;
-        if (a) {
-            return;
-        }
         try {
             Files.move(oldStorage.toPath(), Path.of(dataFolder.getAbsolutePath(), "storages.yml.OLD"));
         } catch (IOException e) {
