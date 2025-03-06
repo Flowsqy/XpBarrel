@@ -9,12 +9,13 @@ import org.bukkit.event.block.BlockExplodeEvent;
 import org.jetbrains.annotations.NotNull;
 
 import fr.flowsqy.xpbarrel.barrel.BarrelManager;
+import fr.flowsqy.xpbarrel.barrel.BlockPosition;
 
-public class BreakListener implements Listener {
+public class ProtectListener implements Listener {
 
     private final BarrelManager barrelManager;
 
-    public BreakListener(@NotNull BarrelManager barrelManager) {
+    public ProtectListener(@NotNull BarrelManager barrelManager) {
         this.barrelManager = barrelManager;
     }
 
@@ -24,18 +25,26 @@ public class BreakListener implements Listener {
         if (blockState.getType() != Material.BARREL) {
             return;
         }
-        barrelManager.getBarrelAt();
-        // TODO Protect barrel
+        final var position = BlockPosition.from(blockState.getLocation());
+        final var xpBarrel = barrelManager.getBarrelAt(blockState.getWorld().getName(), position);
+        if (xpBarrel == null) {
+            return;
+        }
+        event.setCancelled(true);
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onBurn(BlockBurnEvent event) {
-        final var block = event.getIgnitingBlock();
+        final var block = event.getBlock();
         if (block.getType() != Material.BARREL) {
             return;
         }
-        barrelManager.getBarrelAt();
-        // TODO Protect barrel
+        final var position = BlockPosition.from(block.getLocation());
+        final var xpBarrel = barrelManager.getBarrelAt(block.getWorld().getName(), position);
+        if (xpBarrel == null) {
+            return;
+        }
+        event.setCancelled(true);
     }
 
 }
