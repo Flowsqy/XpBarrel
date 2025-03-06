@@ -5,13 +5,18 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
+
+import fr.flowsqy.xpbarrel.barrel.BlockPosition;
+import fr.flowsqy.xpbarrel.barrel.XpBarrelSnapshot;
 
 public class BarrelStorage {
 
@@ -32,7 +37,11 @@ public class BarrelStorage {
             }
         }
         final var storageDir = new File(dataFolder, "storage");
-        if (storageDir.exists() && !storageDir.isDirectory()) {
+        if (!storageDir.exists()) {
+            configurations = Collections.emptyList();
+            return;
+        }
+        if (!storageDir.isDirectory()) {
             logger.log(Level.SEVERE, storageDir.getAbsolutePath() + " is not a directory");
             configurations = Collections.emptyList();
             return;
@@ -46,6 +55,19 @@ public class BarrelStorage {
             final var yamlConfiguration = YamlConfiguration.loadConfiguration(storageFile);
             configurations.add(new WorldConfiguration(fileName.substring(0, fileName.length() - 4), yamlConfiguration));
         }
+    }
+
+    @NotNull
+    public Map<String, Map<BlockPosition, XpBarrelSnapshot>> loadBarrels(@NotNull Logger logger) {
+        final Map<String, Map<BlockPosition, XpBarrelSnapshot>> loadedBarrels = new HashMap<>();
+        fillPreviousValues(loadedBarrels);
+        return loadedBarrels;
+    }
+
+    @NotNull
+    private void fillPreviousValues(@NotNull Map<String, Map<BlockPosition, XpBarrelSnapshot>> loadedBarrels) {
+        final var sectionList = oldConfiguration.getList("Instances");
+        System.out.println(sectionList);
     }
 
 }
