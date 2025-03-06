@@ -99,13 +99,13 @@ public class OldBarrelStorageLoader {
             if (!(rawZ instanceof Number z)) {
                 continue;
             }
-            int storedLevel = 0;
+            int experience = 0;
             if (entryMap.get("StoredExperience") instanceof Number storedExperience) {
-                storedLevel = storedExperience.intValue();
+                experience = storedExperience.intValue();
             }
             final var blockPosition = new BlockPosition(x.intValue(), y.intValue(), z.intValue());
             final var loadedBarrelsInWorld = loadedBarrels.computeIfAbsent(world, k -> new HashMap<>());
-            loadedBarrelsInWorld.put(blockPosition, new XpBarrelSnapshot(storedLevel, ownerId));
+            loadedBarrelsInWorld.put(blockPosition, new XpBarrelSnapshot(experience, ownerId));
         }
     }
 
