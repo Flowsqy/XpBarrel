@@ -15,12 +15,12 @@ import org.jetbrains.annotations.NotNull;
 import fr.flowsqy.xpbarrel.barrel.BlockPosition;
 import fr.flowsqy.xpbarrel.barrel.XpBarrelSnapshot;
 
-public class BarrelStorage {
+public class BarrelStorageLoader {
 
     private final OldBarrelStorageLoader oldBarrelStorageLoader;
     private final List<WorldConfiguration> configurations;
 
-    public BarrelStorage() {
+    public BarrelStorageLoader() {
         oldBarrelStorageLoader = new OldBarrelStorageLoader();
         configurations = new LinkedList<>();
     }
