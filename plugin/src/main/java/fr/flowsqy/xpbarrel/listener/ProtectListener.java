@@ -6,6 +6,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockExplodeEvent;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.jetbrains.annotations.NotNull;
 
 import fr.flowsqy.xpbarrel.barrel.BarrelManager;
@@ -41,6 +43,28 @@ public class ProtectListener implements Listener {
         }
         final var position = BlockPosition.from(block.getLocation());
         final var xpBarrel = barrelManager.getBarrelAt(block.getWorld().getName(), position);
+        if (xpBarrel == null) {
+            return;
+        }
+        event.setCancelled(true);
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onItemTransfer(InventoryMoveItemEvent event) {
+        final var destinationInventory = event.getDestination();
+        if (destinationInventory.getType() != InventoryType.BARREL) {
+            return;
+        }
+        final var location = destinationInventory.getLocation();
+        if (location == null) {
+            return;
+        }
+        final var world = location.getWorld();
+        if (world == null) {
+            return;
+        }
+        final var position = BlockPosition.from(location);
+        final var xpBarrel = barrelManager.getBarrelAt(world.getName(), position);
         if (xpBarrel == null) {
             return;
         }
