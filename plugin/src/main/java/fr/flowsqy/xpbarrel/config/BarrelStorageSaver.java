@@ -12,9 +12,12 @@ import fr.flowsqy.xpbarrel.barrel.BarrelManager;
 
 public class BarrelStorageSaver {
 
+    private File storageDir;
+
     public void load(@NotNull File dataFolder, @NotNull Logger logger) {
-        final var storageDir = new File(dataFolder, "storage");
+        storageDir = new File(dataFolder, "storage");
         if (!storageDir.exists()) {
+            storageDir.mkdirs();
             return;
         }
         if (!storageDir.isDirectory()) {
@@ -31,15 +34,15 @@ public class BarrelStorageSaver {
             for (var loadedBarrelSnapshot : loadedBarrelsSnapshot.loadedBarrelsInWorld()) {
                 final var barrelSection = configuration.createSection("barrel-" + i++);
                 final var xpBarrel = loadedBarrelSnapshot.xpBarrel();
-                barrelSection.set("owner", xpBarrel.owner());
-                final var positionSection = configuration.createSection("position");
+                barrelSection.set("owner", xpBarrel.owner().toString());
+                final var positionSection = barrelSection.createSection("position");
                 final var position = loadedBarrelSnapshot.position();
                 positionSection.set("x", position.x());
                 positionSection.set("y", position.y());
                 positionSection.set("z", position.z());
                 barrelSection.set("experience", xpBarrel.experience());
             }
-            final var configFile = new File(dataFolder, loadedBarrelsSnapshot.world() + ".yml");
+            final var configFile = new File(storageDir, loadedBarrelsSnapshot.world() + ".yml");
             try {
                 configuration.save(configFile);
             } catch (IOException e) {

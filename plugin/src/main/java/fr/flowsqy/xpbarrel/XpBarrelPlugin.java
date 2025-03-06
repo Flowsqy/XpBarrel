@@ -51,6 +51,7 @@ public class XpBarrelPlugin extends JavaPlugin {
         }
         final var logger = getLogger();
         final var barrelStorageSaver = new BarrelStorageSaver();
+        barrelStorageSaver.load(dataFolder, logger);
         barrelStorageSaver.saveBarrels(logger, dataFolder, barrelManager.getSnapshot());
     }
 
