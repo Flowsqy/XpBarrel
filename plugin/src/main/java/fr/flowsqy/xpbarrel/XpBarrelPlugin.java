@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import fr.flowsqy.xpbarrel.barrel.BarrelManager;
+import fr.flowsqy.xpbarrel.config.BarrelStorage;
 import fr.flowsqy.xpbarrel.config.ConfigLoader;
 import fr.flowsqy.xpbarrel.listener.BreakListener;
 import fr.flowsqy.xpbarrel.listener.InteractListener;
@@ -21,8 +22,10 @@ public class XpBarrelPlugin extends JavaPlugin {
             logger.warning("Can't write in the plugin directory. Disable the plugin");
             return;
         }
-        // TODO Init barrel manager
-        final var barrelManager = new BarrelManager(null);
+        final var barrelStorage = new BarrelStorage();
+        barrelStorage.load(dataFolder, logger);
+        final var loadedBarrels = barrelStorage.loadBarrels(logger);
+        final var barrelManager = new BarrelManager(loadedBarrels);
         final var pluginManager = getServer().getPluginManager();
         pluginManager.registerEvents(new BreakListener(barrelManager), this);
         pluginManager.registerEvents(new ProtectListener(barrelManager), this);
