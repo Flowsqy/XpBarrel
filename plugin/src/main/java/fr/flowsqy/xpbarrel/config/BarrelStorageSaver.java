@@ -2,15 +2,13 @@ package fr.flowsqy.xpbarrel.config;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
-import fr.flowsqy.xpbarrel.barrel.BlockPosition;
-import fr.flowsqy.xpbarrel.barrel.XpBarrelSnapshot;
+import fr.flowsqy.xpbarrel.barrel.BarrelManager;
 
 public class BarrelStorageSaver {
 
@@ -26,26 +24,27 @@ public class BarrelStorageSaver {
     }
 
     public void saveBarrels(@NotNull Logger logger, @NotNull File dataFolder,
-            @NotNull Map<String, Map<BlockPosition, XpBarrelSnapshot>> loadedBarrels) {
-        for (var worldEntry : loadedBarrels.entrySet()) {
+            @NotNull BarrelManager.LoadedBarrelsSnapshot[] loadedBarrels) {
+        for (var loadedBarrelsSnapshot : loadedBarrels) {
             final var configuration = new YamlConfiguration();
             int i = 0;
-            for (var barrelEntry : worldEntry.getValue().entrySet()) {
+            for (var loadedBarrelSnapshot : loadedBarrelsSnapshot.loadedBarrelsInWorld()) {
                 final var barrelSection = configuration.createSection("barrel-" + i++);
-                final var xpBarrel = barrelEntry.getValue();
+                final var xpBarrel = loadedBarrelSnapshot.xpBarrel();
                 barrelSection.set("owner", xpBarrel.owner());
                 final var positionSection = configuration.createSection("position");
-                final var position = barrelEntry.getKey();
+                final var position = loadedBarrelSnapshot.position();
                 positionSection.set("x", position.x());
                 positionSection.set("y", position.y());
                 positionSection.set("z", position.z());
                 barrelSection.set("experience", xpBarrel.experience());
             }
-            final var configFile = new File(dataFolder, worldEntry.getKey() + ".yml");
+            final var configFile = new File(dataFolder, loadedBarrelsSnapshot.world() + ".yml");
             try {
                 configuration.save(configFile);
             } catch (IOException e) {
-                logger.log(Level.WARNING, "Couldn't save the barrels for the world '" + worldEntry.getKey() + "'", e);
+                logger.log(Level.WARNING,
+                        "Couldn't save the barrels for the world '" + loadedBarrelsSnapshot.world() + "'", e);
                 continue;
             }
         }
