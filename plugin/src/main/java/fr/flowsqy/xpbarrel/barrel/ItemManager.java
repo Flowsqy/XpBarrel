@@ -42,6 +42,7 @@ public class ItemManager {
         }
         barrelPdc.set(experienceKey, PersistentDataType.INTEGER, experience);
         itemPdc.set(barrelKey, PersistentDataType.TAG_CONTAINER, barrelPdc);
+        itemStack.setItemMeta(itemMeta);
         return itemStack;
     }
 
