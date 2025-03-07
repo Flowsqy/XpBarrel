@@ -4,11 +4,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import fr.flowsqy.xpbarrel.barrel.BarrelManager;
+import fr.flowsqy.xpbarrel.barrel.ItemManager;
 import fr.flowsqy.xpbarrel.config.BarrelStorageLoader;
 import fr.flowsqy.xpbarrel.config.BarrelStorageSaver;
 import fr.flowsqy.xpbarrel.config.ConfigLoader;
 import fr.flowsqy.xpbarrel.listener.BreakListener;
 import fr.flowsqy.xpbarrel.listener.InteractListener;
+import fr.flowsqy.xpbarrel.listener.PlaceListener;
 import fr.flowsqy.xpbarrel.listener.ProtectListener;
 
 public class XpBarrelPlugin extends JavaPlugin {
@@ -33,10 +35,12 @@ public class XpBarrelPlugin extends JavaPlugin {
         barrelStorage.load(dataFolder, logger);
         final var loadedBarrels = barrelStorage.loadBarrels(logger);
         barrelManager = new BarrelManager(loadedBarrels);
+        final var itemManager = new ItemManager();
         final var pluginManager = getServer().getPluginManager();
         pluginManager.registerEvents(new BreakListener(barrelManager), this);
         pluginManager.registerEvents(new ProtectListener(barrelManager), this);
         pluginManager.registerEvents(new InteractListener(barrelManager), this);
+        pluginManager.registerEvents(new PlaceListener(itemManager), this);
     }
 
     @Override
