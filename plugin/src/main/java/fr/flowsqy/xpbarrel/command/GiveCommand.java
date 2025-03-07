@@ -27,7 +27,13 @@ public class GiveCommand implements CommandExecutor {
             sender.sendMessage(args[0] + " is not a connected player");
             return true;
         }
-        targetPlayer.getInventory().addItem(itemManager.generateItem(targetPlayer.getUniqueId(), 0));
+        final var leftItems = targetPlayer.getInventory()
+                .addItem(itemManager.generateItem(targetPlayer.getUniqueId(), 0));
+        final var world = targetPlayer.getWorld();
+        final var location = targetPlayer.getLocation();
+        for (var entry : leftItems.entrySet()) {
+            world.dropItemNaturally(location, entry.getValue());
+        }
         return true;
     }
 
