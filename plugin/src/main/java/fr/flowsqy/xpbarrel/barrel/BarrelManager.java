@@ -52,7 +52,7 @@ public class BarrelManager {
                 loadedBarrelsInWorldSnapshot[barrelNumber++] = new LoadedBarrelSnapshot(barrelEntry.getKey(),
                         barrelEntry.getValue());
             }
-            loadedBarrelsSnapshot[worldNumber] = new LoadedBarrelsSnapshot(worldEntry.getKey(),
+            loadedBarrelsSnapshot[worldNumber++] = new LoadedBarrelsSnapshot(worldEntry.getKey(),
                     loadedBarrelsInWorldSnapshot);
         }
         return loadedBarrelsSnapshot;
