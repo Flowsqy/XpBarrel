@@ -21,7 +21,7 @@ public class BreakListener implements Listener {
         this.itemManager = itemManager;
     }
 
-    @EventHandler(priority = EventPriority.NORMAL)
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onBreak(BlockBreakEvent event) {
         final var brokenBlock = event.getBlock();
         if (brokenBlock.getType() != Material.BARREL) {
