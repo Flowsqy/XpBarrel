@@ -9,13 +9,16 @@ import org.jetbrains.annotations.NotNull;
 
 import fr.flowsqy.xpbarrel.barrel.BarrelManager;
 import fr.flowsqy.xpbarrel.barrel.BlockPosition;
+import fr.flowsqy.xpbarrel.barrel.ItemManager;
 
 public class BreakListener implements Listener {
 
     private final BarrelManager barrelManager;
+    private final ItemManager itemManager;
 
-    public BreakListener(@NotNull BarrelManager barrelManager) {
+    public BreakListener(@NotNull BarrelManager barrelManager, @NotNull ItemManager itemManager) {
         this.barrelManager = barrelManager;
+        this.itemManager = itemManager;
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
@@ -39,8 +42,10 @@ public class BreakListener implements Listener {
             return;
         }
         event.setDropItems(false);
-        // TODO Drop correctly the item
-        world.dropItemNaturally(location, null);
+        final var dropItem = itemManager.generateItem(xpBarrel.owner(), xpBarrel.experience());
+        if (dropItem != null) {
+            world.dropItemNaturally(location, dropItem);
+        }
     }
 
 }
