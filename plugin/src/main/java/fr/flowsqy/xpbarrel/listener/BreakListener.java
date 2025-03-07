@@ -38,7 +38,7 @@ public class BreakListener implements Listener {
         final var breakerPlayer = event.getPlayer();
         if (!xpBarrel.owner().equals(breakerPlayer.getUniqueId())
                 && !breakerPlayer.hasPermission("xpbarrel.break-other")) {
-            event.setCancelled(false);
+            event.setCancelled(true);
             return;
         }
         event.setDropItems(false);
