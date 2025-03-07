@@ -29,7 +29,7 @@ public class InteractListener implements Listener {
             return;
         }
         final var player = event.getPlayer();
-        if (player.isSneaking()) {
+        if (player.isSneaking() && event.isBlockInHand()) {
             return;
         }
         final var position = BlockPosition.from(interactedBlock.getLocation());
