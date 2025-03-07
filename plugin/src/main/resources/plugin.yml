@@ -3,3 +3,6 @@ author: "Flowsqy"
 version: "${version}"
 main: "fr.flowsqy.xpbarrel.XpBarrelPlugin"
 api-version: "1.13"
+commands:
+  xpbarrel:
+    permission: xpbarrel.command

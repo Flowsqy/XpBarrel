@@ -5,6 +5,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import fr.flowsqy.xpbarrel.barrel.BarrelManager;
 import fr.flowsqy.xpbarrel.barrel.ItemManager;
+import fr.flowsqy.xpbarrel.command.CommandLoader;
 import fr.flowsqy.xpbarrel.config.BarrelStorageLoader;
 import fr.flowsqy.xpbarrel.config.BarrelStorageSaver;
 import fr.flowsqy.xpbarrel.config.ConfigLoader;
@@ -36,6 +37,8 @@ public class XpBarrelPlugin extends JavaPlugin {
         final var loadedBarrels = barrelStorage.loadBarrels(logger);
         barrelManager = new BarrelManager(loadedBarrels);
         final var itemManager = new ItemManager(this);
+        final var commandLoader = new CommandLoader();
+        commandLoader.load(this, itemManager);
         final var pluginManager = getServer().getPluginManager();
         pluginManager.registerEvents(new BreakListener(barrelManager, itemManager), this);
         pluginManager.registerEvents(new ProtectListener(barrelManager), this);
