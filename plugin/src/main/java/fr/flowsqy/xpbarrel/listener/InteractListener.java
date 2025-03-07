@@ -28,6 +28,10 @@ public class InteractListener implements Listener {
         if (interactedBlock.getType() != Material.BARREL) {
             return;
         }
+        final var player = event.getPlayer();
+        if (player.isSneaking()) {
+            return;
+        }
         final var position = BlockPosition.from(interactedBlock.getLocation());
         final var xpBarrel = barrelManager.getBarrelAt(interactedBlock.getWorld().getName(), position);
         if (xpBarrel == null) {
