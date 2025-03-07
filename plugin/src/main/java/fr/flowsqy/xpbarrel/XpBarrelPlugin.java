@@ -40,7 +40,7 @@ public class XpBarrelPlugin extends JavaPlugin {
         pluginManager.registerEvents(new BreakListener(barrelManager, itemManager), this);
         pluginManager.registerEvents(new ProtectListener(barrelManager), this);
         pluginManager.registerEvents(new InteractListener(barrelManager), this);
-        pluginManager.registerEvents(new PlaceListener(itemManager), this);
+        pluginManager.registerEvents(new PlaceListener(barrelManager, itemManager), this);
     }
 
     @Override

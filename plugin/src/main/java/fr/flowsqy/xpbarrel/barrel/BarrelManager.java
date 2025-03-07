@@ -1,5 +1,6 @@
 package fr.flowsqy.xpbarrel.barrel;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
@@ -11,6 +12,12 @@ public class BarrelManager {
 
     public BarrelManager(@NotNull Map<String, Map<BlockPosition, XpBarrelSnapshot>> loadedBarrels) {
         this.loadedBarrels = loadedBarrels;
+    }
+
+    public XpBarrelSnapshot addBarrelAt(@NotNull String world, @NotNull BlockPosition barrelPosition,
+            @NotNull XpBarrelSnapshot xpBarrel) {
+        final var loadedBarrelsInWorld = loadedBarrels.computeIfAbsent(world, k -> new HashMap<>());
+        return loadedBarrelsInWorld.put(barrelPosition, xpBarrel);
     }
 
     @Nullable
