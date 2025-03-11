@@ -9,6 +9,7 @@ import fr.flowsqy.xpbarrel.command.CommandLoader;
 import fr.flowsqy.xpbarrel.config.BarrelStorageLoader;
 import fr.flowsqy.xpbarrel.config.BarrelStorageSaver;
 import fr.flowsqy.xpbarrel.config.ConfigLoader;
+import fr.flowsqy.xpbarrel.config.MessageConfig;
 import fr.flowsqy.xpbarrel.listener.BreakListener;
 import fr.flowsqy.xpbarrel.listener.InteractListener;
 import fr.flowsqy.xpbarrel.listener.PlaceListener;
@@ -32,6 +33,9 @@ public class XpBarrelPlugin extends JavaPlugin {
             logger.warning("Can't write in the plugin directory. Disable the plugin");
             return;
         }
+        final MessageConfig messageConfig = new MessageConfig();
+        messageConfig.load(configLoader, this, "messages.yml");
+        messageConfig.loadPrefix();
         final var barrelStorage = new BarrelStorageLoader();
         barrelStorage.load(dataFolder, logger);
         final var loadedBarrels = barrelStorage.loadBarrels(logger);
