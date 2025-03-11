@@ -10,8 +10,13 @@ public class BarrelManager {
 
     private final Map<String, Map<BlockPosition, XpBarrelSnapshot>> loadedBarrels;
 
-    public BarrelManager(@NotNull Map<String, Map<BlockPosition, XpBarrelSnapshot>> loadedBarrels) {
-        this.loadedBarrels = loadedBarrels;
+    public BarrelManager() {
+        loadedBarrels = new HashMap<>();
+    }
+
+    public void load(@NotNull Map<String, Map<BlockPosition, XpBarrelSnapshot>> loadedBarrels) {
+        this.loadedBarrels.clear();
+        this.loadedBarrels.putAll(loadedBarrels);
     }
 
     public XpBarrelSnapshot addBarrelAt(@NotNull String world, @NotNull BlockPosition barrelPosition,

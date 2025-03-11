@@ -17,10 +17,10 @@ import fr.flowsqy.xpbarrel.listener.ProtectListener;
 
 public class XpBarrelPlugin extends JavaPlugin {
 
-    private BarrelManager barrelManager;
+    private final BarrelManager barrelManager;
 
     public XpBarrelPlugin() {
-        barrelManager = null;
+        barrelManager = new BarrelManager();
     }
 
     @Override
@@ -39,7 +39,7 @@ public class XpBarrelPlugin extends JavaPlugin {
         final var barrelStorage = new BarrelStorageLoader();
         barrelStorage.load(dataFolder, logger);
         final var loadedBarrels = barrelStorage.loadBarrels(logger);
-        barrelManager = new BarrelManager(loadedBarrels);
+        barrelManager.load(loadedBarrels);
         final var itemManager = new ItemManager(this);
         final var commandLoader = new CommandLoader();
         commandLoader.load(this, messageConfig, itemManager);
@@ -55,9 +55,6 @@ public class XpBarrelPlugin extends JavaPlugin {
         final var configLoader = new ConfigLoader();
         final var dataFolder = getDataFolder();
         if (!configLoader.checkDataFolder(dataFolder)) {
-            return;
-        }
-        if (barrelManager == null) {
             return;
         }
         final var logger = getLogger();

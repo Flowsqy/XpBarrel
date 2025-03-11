@@ -1,6 +1,6 @@
 package fr.flowsqy.xpbarrel.command;
 
-import org.bukkit.command.TabExecutor;
+import org.bukkit.command.TabCompleter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,7 +13,7 @@ public class SubCommand {
     private final String permission;
     private final BaseComponent helpMessage;
     private final Executor executor;
-    private final TabExecutor tabCompleter;
+    private final TabCompleter tabCompleter;
 
     public SubCommand(@NotNull String name, @NotNull String[] aliases, @NotNull String permission,
             @Nullable BaseComponent helpMessage, @NotNull Executor executor) {
@@ -21,7 +21,7 @@ public class SubCommand {
     }
 
     public SubCommand(@NotNull String name, @NotNull String[] aliases, @NotNull String permission,
-            @Nullable BaseComponent helpMessage, @NotNull Executor executor, @Nullable TabExecutor tabCompleter) {
+            @Nullable BaseComponent helpMessage, @NotNull Executor executor, @Nullable TabCompleter tabCompleter) {
         this.name = name;
         this.aliases = aliases;
         this.permission = permission;
@@ -63,7 +63,7 @@ public class SubCommand {
     }
 
     @Nullable
-    public TabExecutor getTabCompleter() {
+    public TabCompleter getTabCompleter() {
         return tabCompleter;
     }
 

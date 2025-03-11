@@ -3,4 +3,9 @@ prefix: "&7[&5XpBarrel&7]"
 command:
   help:
     help: "%prefix% &6/xpbarrel help"
+    reload: "%prefix% &6/xpbarrel reload"
+    give: "%prefix% &6/xpbarrel give [player]"
+  give:
+    not-player: "%prefix% &7%player% &cis not a connected player"
+    success: "%prefix% &a%player% &6received a barrel"
 
