@@ -41,6 +41,7 @@ public class BreakListener implements Listener {
             event.setCancelled(true);
             return;
         }
+        barrelManager.removeBarrelAt(worldName, position);
         event.setDropItems(false);
         final var dropItem = itemManager.generateItem(xpBarrel.owner(), xpBarrel.experience());
         if (dropItem != null) {
