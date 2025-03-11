@@ -45,7 +45,7 @@ public class BreakListener implements Listener {
         event.setDropItems(false);
         final var dropItem = itemManager.generateItem(xpBarrel.owner(), xpBarrel.experience());
         if (dropItem != null) {
-            world.dropItemNaturally(location, dropItem);
+            world.dropItemNaturally(location.add(0.5, 0.5, 0.5), dropItem);
         }
     }
 
