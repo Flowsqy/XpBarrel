@@ -5,4 +5,7 @@ main: "fr.flowsqy.xpbarrel.XpBarrelPlugin"
 api-version: "1.13"
 commands:
   xpbarrel:
-    permission: xpbarrel.command
+    description: "XpBarrel root command"
+    aliases: ["xpb"]
+    permission: "xpbarrel.command"
+

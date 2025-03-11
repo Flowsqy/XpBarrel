@@ -42,7 +42,7 @@ public class XpBarrelPlugin extends JavaPlugin {
         barrelManager = new BarrelManager(loadedBarrels);
         final var itemManager = new ItemManager(this);
         final var commandLoader = new CommandLoader();
-        commandLoader.load(this, itemManager);
+        commandLoader.load(this, messageConfig, itemManager);
         final var pluginManager = getServer().getPluginManager();
         pluginManager.registerEvents(new BreakListener(barrelManager, itemManager), this);
         pluginManager.registerEvents(new ProtectListener(barrelManager), this);

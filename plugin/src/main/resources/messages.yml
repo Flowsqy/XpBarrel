@@ -1,1 +1,6 @@
 prefix: "&7[&5XpBarrel&7]"
+
+command:
+  help:
+    help: "%prefix% &6/xpbarrel help"
+
