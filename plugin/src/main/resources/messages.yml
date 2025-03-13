@@ -5,6 +5,9 @@ command:
     help: "%prefix% &6/xpbarrel help"
     reload: "%prefix% &6/xpbarrel reload"
     give: "%prefix% &6/xpbarrel give [player]"
+  reload:
+    fail: "%prefix% &cCouldn't reload the plugin"
+    success: "%prefix% &6The plugin has been successfully reloaded"
   give:
     not-player: "%prefix% &7%player% &cis not a connected player"
     success: "%prefix% &a%player% &6received a barrel"
