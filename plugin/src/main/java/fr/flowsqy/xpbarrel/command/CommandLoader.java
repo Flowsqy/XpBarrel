@@ -16,7 +16,8 @@ public class CommandLoader {
         subCommands[0] = new SubCommand("help", new String[] { "h" }, "xpbarrel.command.help",
                 messageConfig.getComponentMessage("command.help.help"), helpExecutor);
         subCommands[1] = new SubCommand("reload", new String[] { "rl" }, "xpbarrel.command.reload",
-                messageConfig.getComponentMessage("command.help.reload"), new ReloadExecutor());
+                messageConfig.getComponentMessage("command.help.reload"),
+                new ReloadExecutor(pluginData, messageConfig));
         final var giveHelpMessage = messageConfig.getComponentMessage("command.help.give");
         subCommands[2] = new SubCommand("give", new String[] { "g" }, "xpbarrel.command.give", giveHelpMessage,
                 new GiveExecutor(pluginData.itemManager(), giveHelpMessage, messageConfig), new NameTabCompleter());
