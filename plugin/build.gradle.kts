@@ -7,6 +7,9 @@ repositories {
     maven {
         url = uri("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
     }    
+    maven {
+        url = uri("https://jitpack.io")
+    }
 }
 
 dependencies {
@@ -14,6 +17,7 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     implementation(libs.jetbrains.annotations)
     implementation(libs.spigot.api)
+    implementation(libs.abstractmenu)
 }
 
 java {

@@ -3,6 +3,8 @@ author: "Flowsqy"
 version: "${version}"
 main: "fr.flowsqy.xpbarrel.XpBarrelPlugin"
 api-version: "1.13"
+depend: 
+- AbstractMenu
 commands:
   xpbarrel:
     description: "XpBarrel root command"
