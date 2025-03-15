@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 import fr.flowsqy.abstractmenu.factory.MenuFactory;
 import fr.flowsqy.abstractmenu.inventory.EventInventory;
+import fr.flowsqy.xpbarrel.XpBarrelPlugin;
 import fr.flowsqy.xpbarrel.menu.MainMenuRegisterHandler;
 
 public class MenuConfig {
@@ -26,12 +27,13 @@ public class MenuConfig {
     }
 
     @NotNull
-    public EventInventory getMainMenu(@NotNull MenuFactory menuFactory) {
+    public EventInventory getMainMenu(@NotNull XpBarrelPlugin plugin, @NotNull MenuFactory menuFactory) {
         final var inventorySection = configuration.getConfigurationSection("main-menu");
         if (inventorySection == null) {
             return new EventInventory(menuFactory, "", 3);
         }
-        return EventInventory.deserialize(inventorySection, menuFactory, new MainMenuRegisterHandler(inventorySection));
+        return EventInventory.deserialize(inventorySection, menuFactory,
+                new MainMenuRegisterHandler(plugin, inventorySection));
     }
 
 }

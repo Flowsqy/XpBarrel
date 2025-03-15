@@ -31,7 +31,7 @@ public class PluginDataLoader {
         final var menuConfig = new MenuConfig();
         menuConfig.load(configLoader, plugin, "menu.yml");
         final var menuManager = pluginData.menuManager();
-        menuManager.load(menuConfig.getMainMenu(menuManager.getMenuFactory()));
+        menuManager.load(menuConfig.getMainMenu(plugin, menuManager.getMenuFactory()));
         final var commandLoader = new CommandLoader();
         commandLoader.load(pluginData, messageConfig);
     }
