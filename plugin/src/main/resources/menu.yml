@@ -1,0 +1,9 @@
+main-menu:
+  name: "&cXpBarrel"
+  line: 3
+  items:
+    barrel:
+      slots:
+      - 13
+      item:
+        type: barrel

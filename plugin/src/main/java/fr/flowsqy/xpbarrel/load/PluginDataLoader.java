@@ -9,6 +9,7 @@ import fr.flowsqy.xpbarrel.config.BarrelStorageLoader;
 import fr.flowsqy.xpbarrel.config.BarrelStorageSaver;
 import fr.flowsqy.xpbarrel.config.Config;
 import fr.flowsqy.xpbarrel.config.ConfigLoader;
+import fr.flowsqy.xpbarrel.config.MenuConfig;
 import fr.flowsqy.xpbarrel.config.MessageConfig;
 
 public class PluginDataLoader {
@@ -27,6 +28,10 @@ public class PluginDataLoader {
         final var loadedBarrels = barrelStorage.loadBarrels(logger);
         pluginData.barrelManager().load(loadedBarrels);
         pluginData.itemManager().load(config.getBarrelName(), config.getBarrelLore());
+        final var menuConfig = new MenuConfig();
+        menuConfig.load(configLoader, plugin, "menu.yml");
+        final var menuManager = pluginData.menuManager();
+        menuManager.load(menuConfig.getMainMenu(menuManager.getMenuFactory()));
         final var commandLoader = new CommandLoader();
         commandLoader.load(pluginData, messageConfig);
     }
