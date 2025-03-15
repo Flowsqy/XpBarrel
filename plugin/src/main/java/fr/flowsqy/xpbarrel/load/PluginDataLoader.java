@@ -7,6 +7,7 @@ import fr.flowsqy.xpbarrel.barrel.BarrelManager;
 import fr.flowsqy.xpbarrel.command.CommandLoader;
 import fr.flowsqy.xpbarrel.config.BarrelStorageLoader;
 import fr.flowsqy.xpbarrel.config.BarrelStorageSaver;
+import fr.flowsqy.xpbarrel.config.Config;
 import fr.flowsqy.xpbarrel.config.ConfigLoader;
 import fr.flowsqy.xpbarrel.config.MessageConfig;
 
@@ -16,6 +17,8 @@ public class PluginDataLoader {
         final var configLoader = new ConfigLoader();
         final var plugin = pluginData.plugin();
         final var logger = plugin.getLogger();
+        final var config = new Config();
+        config.load(configLoader, plugin, "config.yml");
         final var messageConfig = new MessageConfig();
         messageConfig.load(configLoader, plugin, "messages.yml");
         messageConfig.loadPrefix();
