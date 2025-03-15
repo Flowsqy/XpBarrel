@@ -3,4 +3,4 @@ item:
   lore:
   - "&r&cOwner: &7%owner%"
   - "&r&cExperience: &7%level% levels and %experience% xp"
-  - "&r&7(%total% total experience)"
+  - "&r&7(%total-experience% total experience)"

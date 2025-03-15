@@ -87,7 +87,7 @@ public class ItemManager {
     }
 
     private String replaceExperience(@NotNull String original, @NotNull ExperienceData experienceData, int experience) {
-        return barrelName.replace("%level%", String.valueOf(experienceData.level()))
+        return original.replace("%level%", String.valueOf(experienceData.level()))
                 .replace("%experience%", String.valueOf(experienceData.addedExperience()))
                 .replace("%total-experience%", String.valueOf(experience));
     }
