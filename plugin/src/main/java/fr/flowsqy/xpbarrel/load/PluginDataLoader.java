@@ -26,6 +26,7 @@ public class PluginDataLoader {
         barrelStorage.load(plugin.getDataFolder(), logger);
         final var loadedBarrels = barrelStorage.loadBarrels(logger);
         pluginData.barrelManager().load(loadedBarrels);
+        pluginData.itemManager().load(config.getBarrelName(), config.getBarrelLore());
         final var commandLoader = new CommandLoader();
         commandLoader.load(pluginData, messageConfig);
     }
