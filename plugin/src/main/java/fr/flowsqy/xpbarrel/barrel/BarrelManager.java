@@ -8,25 +8,26 @@ import org.jetbrains.annotations.Nullable;
 
 public class BarrelManager {
 
-    private final Map<String, Map<BlockPosition, XpBarrelSnapshot>> loadedBarrels;
+    private final Map<String, Map<BlockPosition, XpBarrel>> loadedBarrels;
 
     public BarrelManager() {
         loadedBarrels = new HashMap<>();
     }
 
-    public void load(@NotNull Map<String, Map<BlockPosition, XpBarrelSnapshot>> loadedBarrels) {
+    public void load(@NotNull Map<String, Map<BlockPosition, XpBarrel>> loadedBarrels) {
         this.loadedBarrels.clear();
         this.loadedBarrels.putAll(loadedBarrels);
     }
 
-    public XpBarrelSnapshot addBarrelAt(@NotNull String world, @NotNull BlockPosition barrelPosition,
-            @NotNull XpBarrelSnapshot xpBarrel) {
+    @Nullable
+    public XpBarrel addBarrelAt(@NotNull String world, @NotNull BlockPosition barrelPosition,
+            @NotNull XpBarrel xpBarrel) {
         final var loadedBarrelsInWorld = loadedBarrels.computeIfAbsent(world, k -> new HashMap<>());
         return loadedBarrelsInWorld.put(barrelPosition, xpBarrel);
     }
 
     @Nullable
-    public XpBarrelSnapshot getBarrelAt(@NotNull String world, @NotNull BlockPosition barrelPosition) {
+    public XpBarrel getBarrelAt(@NotNull String world, @NotNull BlockPosition barrelPosition) {
         final var loadedBarrelsInWorld = loadedBarrels.get(world);
         if (loadedBarrelsInWorld == null) {
             return null;
@@ -35,7 +36,7 @@ public class BarrelManager {
     }
 
     @Nullable
-    public XpBarrelSnapshot removeBarrelAt(@NotNull String world, @NotNull BlockPosition barrelPosition) {
+    public XpBarrel removeBarrelAt(@NotNull String world, @NotNull BlockPosition barrelPosition) {
         final var loadedBarrelsInWorld = loadedBarrels.get(world);
         if (loadedBarrelsInWorld == null) {
             return null;
@@ -63,7 +64,7 @@ public class BarrelManager {
         return loadedBarrelsSnapshot;
     }
 
-    public record LoadedBarrelSnapshot(@NotNull BlockPosition position, @NotNull XpBarrelSnapshot xpBarrel) {
+    public record LoadedBarrelSnapshot(@NotNull BlockPosition position, @NotNull XpBarrel xpBarrel) {
     }
 
     public record LoadedBarrelsSnapshot(@NotNull String world, @NotNull LoadedBarrelSnapshot[] loadedBarrelsInWorld) {

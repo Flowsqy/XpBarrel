@@ -31,7 +31,7 @@ public class ReloadExecutor implements Executor {
             return;
         }
         final var pluginDataLoader = new PluginDataLoader();
-        pluginDataLoader.save(pluginData.plugin(), pluginData.barrelManager());
+        pluginDataLoader.save(pluginData);
         pluginDataLoader.load(pluginData);
         if (successMessage == null) {
             return;

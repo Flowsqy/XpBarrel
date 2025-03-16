@@ -13,7 +13,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 import fr.flowsqy.xpbarrel.barrel.BlockPosition;
-import fr.flowsqy.xpbarrel.barrel.XpBarrelSnapshot;
+import fr.flowsqy.xpbarrel.barrel.XpBarrel;
 
 public class BarrelStorageLoader {
 
@@ -49,8 +49,8 @@ public class BarrelStorageLoader {
     }
 
     @NotNull
-    public Map<String, Map<BlockPosition, XpBarrelSnapshot>> loadBarrels(@NotNull Logger logger) {
-        final Map<String, Map<BlockPosition, XpBarrelSnapshot>> loadedBarrels = new HashMap<>();
+    public Map<String, Map<BlockPosition, XpBarrel>> loadBarrels(@NotNull Logger logger) {
+        final Map<String, Map<BlockPosition, XpBarrel>> loadedBarrels = new HashMap<>();
         oldBarrelStorageLoader.fillPreviousValues(loadedBarrels);
         for (var worldConfig : configurations) {
             final var loadedBarrelsInWorld = loadedBarrels.computeIfAbsent(worldConfig.name(), k -> new HashMap<>());
@@ -78,7 +78,7 @@ public class BarrelStorageLoader {
                 final int z = positionSection.getInt("z", 0);
                 final var position = new BlockPosition(x, y, z);
                 final int experience = barrelSection.getInt("experience", 0);
-                loadedBarrelsInWorld.put(position, new XpBarrelSnapshot(experience, owner));
+                loadedBarrelsInWorld.put(position, new XpBarrel(owner, experience));
             }
         }
         return loadedBarrels;

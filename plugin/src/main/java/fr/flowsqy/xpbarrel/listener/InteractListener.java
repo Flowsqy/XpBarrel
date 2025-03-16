@@ -48,7 +48,8 @@ public class InteractListener implements Listener {
         event.setCancelled(true);
         // TODO Check permission
         Bukkit.getScheduler().runTask(plugin, () -> {
-            menuManager.openMainMenu(player);
+            menuManager.addWatcher(player.getUniqueId(), xpBarrel);
+            menuManager.openMainMenu(player, xpBarrel);
         });
     }
 

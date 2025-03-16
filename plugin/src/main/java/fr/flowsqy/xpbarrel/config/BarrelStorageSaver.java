@@ -34,13 +34,13 @@ public class BarrelStorageSaver {
             for (var loadedBarrelSnapshot : loadedBarrelsSnapshot.loadedBarrelsInWorld()) {
                 final var barrelSection = configuration.createSection("barrel-" + i++);
                 final var xpBarrel = loadedBarrelSnapshot.xpBarrel();
-                barrelSection.set("owner", xpBarrel.owner().toString());
+                barrelSection.set("owner", xpBarrel.getOwner().toString());
                 final var positionSection = barrelSection.createSection("position");
                 final var position = loadedBarrelSnapshot.position();
                 positionSection.set("x", position.x());
                 positionSection.set("y", position.y());
                 positionSection.set("z", position.z());
-                barrelSection.set("experience", xpBarrel.experience());
+                barrelSection.set("experience", xpBarrel.getExperience());
             }
             final var configFile = new File(storageDir, loadedBarrelsSnapshot.world() + ".yml");
             try {

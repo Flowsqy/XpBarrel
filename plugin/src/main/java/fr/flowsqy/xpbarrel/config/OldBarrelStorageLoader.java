@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import org.yaml.snakeyaml.Yaml;
 
 import fr.flowsqy.xpbarrel.barrel.BlockPosition;
-import fr.flowsqy.xpbarrel.barrel.XpBarrelSnapshot;
+import fr.flowsqy.xpbarrel.barrel.XpBarrel;
 
 public class OldBarrelStorageLoader {
 
@@ -50,7 +50,7 @@ public class OldBarrelStorageLoader {
     }
 
     @NotNull
-    public void fillPreviousValues(@NotNull Map<String, Map<BlockPosition, XpBarrelSnapshot>> loadedBarrels) {
+    public void fillPreviousValues(@NotNull Map<String, Map<BlockPosition, XpBarrel>> loadedBarrels) {
         if (!(yamlObject instanceof Map rootMap)) {
             return;
         }
@@ -105,7 +105,7 @@ public class OldBarrelStorageLoader {
             }
             final var blockPosition = new BlockPosition(x.intValue(), y.intValue(), z.intValue());
             final var loadedBarrelsInWorld = loadedBarrels.computeIfAbsent(world, k -> new HashMap<>());
-            loadedBarrelsInWorld.put(blockPosition, new XpBarrelSnapshot(experience, ownerId));
+            loadedBarrelsInWorld.put(blockPosition, new XpBarrel(ownerId, experience));
         }
     }
 

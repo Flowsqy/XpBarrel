@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import fr.flowsqy.xpbarrel.barrel.BarrelManager;
 import fr.flowsqy.xpbarrel.barrel.BlockPosition;
 import fr.flowsqy.xpbarrel.barrel.ItemManager;
-import fr.flowsqy.xpbarrel.barrel.XpBarrelSnapshot;
+import fr.flowsqy.xpbarrel.barrel.XpBarrel;
 
 public class PlaceListener implements Listener {
 
@@ -39,7 +39,7 @@ public class PlaceListener implements Listener {
         final var position = BlockPosition.from(placedBlock.getLocation());
         final var world = placedBlock.getWorld().getName();
         final var ownerId = owner == null ? placerPlayer.getUniqueId() : owner;
-        final var xpBarrel = new XpBarrelSnapshot(extractedData.experience(), ownerId);
+        final var xpBarrel = new XpBarrel(ownerId, extractedData.experience());
         barrelManager.addBarrelAt(world, position, xpBarrel);
     }
 

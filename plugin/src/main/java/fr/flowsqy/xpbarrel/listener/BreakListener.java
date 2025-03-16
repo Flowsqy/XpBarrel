@@ -36,14 +36,14 @@ public class BreakListener implements Listener {
             return;
         }
         final var breakerPlayer = event.getPlayer();
-        if (!xpBarrel.owner().equals(breakerPlayer.getUniqueId())
+        if (!xpBarrel.getOwner().equals(breakerPlayer.getUniqueId())
                 && !breakerPlayer.hasPermission("xpbarrel.break-other")) {
             event.setCancelled(true);
             return;
         }
         barrelManager.removeBarrelAt(worldName, position);
         event.setDropItems(false);
-        final var dropItem = itemManager.generateItem(xpBarrel.owner(), xpBarrel.experience());
+        final var dropItem = itemManager.generateItem(xpBarrel.getOwner(), xpBarrel.getExperience());
         if (dropItem != null) {
             world.dropItemNaturally(location.add(0.5, 0.5, 0.5), dropItem);
         }
