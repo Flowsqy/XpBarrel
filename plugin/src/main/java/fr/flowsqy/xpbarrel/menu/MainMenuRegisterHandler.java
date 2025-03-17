@@ -45,7 +45,7 @@ public class MainMenuRegisterHandler implements RegisterHandler {
             return;
         }
         Consumer<InventoryClickEvent> eventHandler = null;
-        eventHandler = tryChain(eventHandler, getExperienceEvent(inventory, itemSection));
+        eventHandler = tryChain(eventHandler, getExperienceEvent(inventory, section));
         if (section.getBoolean("close", false)) {
             eventHandler = tryChain(eventHandler,
                     e -> Bukkit.getScheduler().runTask(plugin, () -> e.getWhoClicked().closeInventory()));

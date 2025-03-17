@@ -37,7 +37,7 @@ public class XpBarrel {
     }
 
     public int take(int amount) {
-        if (experience >= amount) {
+        if (experience <= amount) {
             return takeAll();
         }
         experience -= amount;

@@ -17,11 +17,10 @@ import fr.flowsqy.xpbarrel.menu.MenuManager;
 
 public class XpBarrelPlugin extends JavaPlugin {
 
-    private final PluginData pluginData;
+    private PluginData pluginData;
 
     public XpBarrelPlugin() {
-        pluginData = new PluginData(this, new BarrelManager(), new ItemManager(this),
-                new MenuManager(new MenuFactory(this)));
+        pluginData = null;
     }
 
     @Override
@@ -35,10 +34,11 @@ public class XpBarrelPlugin extends JavaPlugin {
             return;
         }
         final var pluginDataLoader = new PluginDataLoader();
-        final var barrelManager = pluginData.barrelManager();
-        final var itemManager = pluginData.itemManager();
-        final var menuManager = pluginData.menuManager();
-        pluginDataLoader.load(new PluginData(this, barrelManager, itemManager, menuManager));
+        final var barrelManager = new BarrelManager();
+        final var itemManager = new ItemManager(this);
+        final var menuManager = new MenuManager(new MenuFactory(this));
+        pluginData = new PluginData(this, barrelManager, itemManager, menuManager);
+        pluginDataLoader.load(pluginData);
         final var pluginManager = getServer().getPluginManager();
         pluginManager.registerEvents(new BreakListener(barrelManager, itemManager), this);
         pluginManager.registerEvents(new ProtectListener(barrelManager), this);
