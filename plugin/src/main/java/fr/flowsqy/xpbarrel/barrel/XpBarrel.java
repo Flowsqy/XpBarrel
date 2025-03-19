@@ -44,8 +44,10 @@ public class XpBarrel {
         return amount;
     }
 
-    public void put(int amount) {
-        experience += amount;
+    public int put(int amount, int maxExperience) {
+        final int possibleNewExperience = experience + amount;
+        experience = Math.min(possibleNewExperience, maxExperience);
+        return possibleNewExperience - experience;
     }
 
     @NotNull

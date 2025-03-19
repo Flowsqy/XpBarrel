@@ -8,6 +8,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
+import fr.flowsqy.xpbarrel.barrel.ExperienceCalculator;
+
 public class Config {
 
     private YamlConfiguration configuration;
@@ -40,6 +42,14 @@ public class Config {
             lore[i] = ChatColor.translateAlternateColorCodes('&', iterator.next());
         }
         return lore;
+    }
+
+    public int getMaxExperience() {
+        int rawMax = configuration.getInt("max-experience");
+        if (rawMax < 1 || rawMax > 15460) {
+            rawMax = 15460;
+        }
+        return new ExperienceCalculator().getTotalExpRequiredToLevel(rawMax);
     }
 
 }

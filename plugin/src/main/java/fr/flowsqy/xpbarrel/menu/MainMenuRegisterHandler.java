@@ -1,5 +1,6 @@
 package fr.flowsqy.xpbarrel.menu;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -12,27 +13,77 @@ import org.jetbrains.annotations.Nullable;
 
 import fr.flowsqy.abstractmenu.inventory.EventInventory;
 import fr.flowsqy.abstractmenu.inventory.EventInventory.RegisterHandler;
+import fr.flowsqy.abstractmenu.item.CreatorAdaptor;
 import fr.flowsqy.abstractmenu.item.ItemBuilder;
 import fr.flowsqy.xpbarrel.XpBarrelPlugin;
 import fr.flowsqy.xpbarrel.barrel.ExperienceCalculator;
+import fr.flowsqy.xpbarrel.barrel.ExperienceCalculator.ExperienceData;
 
 public class MainMenuRegisterHandler implements RegisterHandler {
 
     private final XpBarrelPlugin plugin;
     private final MenuManager menuManager;
     private final ConfigurationSection itemSection;
+    private final int maxExperience;
 
     public MainMenuRegisterHandler(@NotNull XpBarrelPlugin plugin, @NotNull MenuManager menuManager,
-            @NotNull ConfigurationSection inventorySection) {
+            @NotNull ConfigurationSection inventorySection, int maxExperience) {
         this.plugin = plugin;
         this.menuManager = menuManager;
         this.itemSection = inventorySection.getConfigurationSection("items");
+        this.maxExperience = maxExperience;
     }
 
     @Override
     public void handle(EventInventory inventory, String key, ItemBuilder itemBuilder, List<Integer> slots) {
         switch (key) {
             case "barrel":
+                itemBuilder.creatorListener(new CreatorAdaptor() {
+
+                    private ExperienceData experienceData;
+                    private int experience;
+
+                    @Override
+                    public void open(Player player) {
+                        final var xpBarrel = menuManager.getWatchedBarrel(player.getUniqueId());
+                        if (xpBarrel == null) {
+                            return;
+                        }
+                        experience = xpBarrel.getExperience();
+                        final var expCalculator = new ExperienceCalculator();
+                        experienceData = expCalculator.getTotalExperience(experience);
+                    }
+
+                    @Override
+                    public void close(Player player) {
+                        experienceData = null;
+                    }
+
+                    @Override
+                    public List<String> handleLore(Player player, List<String> lore) {
+                        if (lore == null) {
+                            return null;
+                        }
+                        final var newLore = new LinkedList<String>();
+                        for (var line : lore) {
+                            newLore.add(replaceExperience(line, experienceData, experience));
+                        }
+                        return newLore;
+                    }
+
+                    @Override
+                    public String handleName(Player player, String name) {
+                        return name == null ? null : replaceExperience(name, experienceData, experience);
+                    }
+
+                    private String replaceExperience(@NotNull String original, @NotNull ExperienceData experienceData,
+                            int experience) {
+                        return original.replace("%level%", String.valueOf(experienceData.level()))
+                                .replace("%experience%", String.valueOf(experienceData.addedExperience()))
+                                .replace("%total-experience%", String.valueOf(experience));
+                    }
+
+                });
                 break;
         }
         if (itemSection == null) {
@@ -95,9 +146,13 @@ public class MainMenuRegisterHandler implements RegisterHandler {
                         final int xpNeededForNextLevel = expCalculator.getExpRequiredToLevelUp(playerLevel);
                         final int playerXpPoints = expCalculator.getTotalExpRequiredToLevel(playerLevel)
                                 + expCalculator.getExperienceFromProgression(xpNeededForNextLevel, player.getExp());
-                        xpBarrel.put(playerXpPoints);
-                        player.setExp(0f);
-                        player.setLevel(0);
+                        final int remainingXp = xpBarrel.put(playerXpPoints, maxExperience);
+                        if (remainingXp != playerXpPoints) {
+
+                            player.setExp(0f);
+                            player.setLevel(0);
+                            player.giveExp(remainingXp);
+                        }
                         for (var watcherId : xpBarrel.getWatchers()) {
                             final var watcher = Bukkit.getPlayer(watcherId);
                             if (watcher == null) {
@@ -152,13 +207,20 @@ public class MainMenuRegisterHandler implements RegisterHandler {
                         final int playerXpPoints = expCalculator.getTotalExpRequiredToLevel(playerLevel)
                                 + expCalculator.getExperienceFromProgression(xpNeededToLevelUp, player.getExp());
                         if (playerXpPoints <= value) {
-                            xpBarrel.put(playerXpPoints);
+                            final int remainingExperience = xpBarrel.put(playerXpPoints, maxExperience);
+                            if (remainingExperience == playerXpPoints) {
+                                return;
+                            }
                             player.setExp(0f);
                             player.setLevel(0);
-                            return;
+                            player.giveExp(remainingExperience);
+                        } else {
+                            final int remainingExperience = xpBarrel.put(value, maxExperience);
+                            if (remainingExperience == value) {
+                                return;
+                            }
+                            player.giveExp(remainingExperience - value);
                         }
-                        player.giveExp(-value);
-                        xpBarrel.put(value);
                         for (var watcherId : xpBarrel.getWatchers()) {
                             final var watcher = Bukkit.getPlayer(watcherId);
                             if (watcher == null) {
@@ -208,16 +270,26 @@ public class MainMenuRegisterHandler implements RegisterHandler {
                     final int progressionXp = expCalculator.getExperienceFromProgression(xpNeededToLevelUp,
                             player.getExp());
                     if (value >= playerLevel) {
-                        xpBarrel.put(expCalculator.getTotalExpRequiredToLevel(playerLevel) + progressionXp);
+                        final int totaPlayerXp = expCalculator.getTotalExpRequiredToLevel(playerLevel) + progressionXp;
+                        final int remainingExperience = xpBarrel.put(totaPlayerXp, maxExperience);
+                        if (totaPlayerXp == remainingExperience) {
+                            return;
+                        }
                         player.setExp(0f);
                         player.setLevel(0);
-                        return;
+                        player.giveExp(remainingExperience);
+                    } else {
+                        final int newLevel = playerLevel - value;
+                        final int experiencePut = progressionXp + expCalculator.getTotalExpRequiredToLevel(playerLevel)
+                                - expCalculator.getTotalExpRequiredToLevel(newLevel);
+                        final int remainingExperience = xpBarrel.put(experiencePut, maxExperience);
+                        if (experiencePut == remainingExperience) {
+                            return;
+                        }
+                        player.setExp(0f);
+                        player.setLevel(newLevel);
+                        player.giveExp(remainingExperience);
                     }
-                    final int newLevel = playerLevel - value;
-                    player.setExp(0f);
-                    player.setLevel(newLevel);
-                    xpBarrel.put(progressionXp + expCalculator.getTotalExpRequiredToLevel(playerLevel)
-                            - expCalculator.getTotalExpRequiredToLevel(newLevel));
                     for (var watcherId : xpBarrel.getWatchers()) {
                         final var watcher = Bukkit.getPlayer(watcherId);
                         if (watcher == null) {
