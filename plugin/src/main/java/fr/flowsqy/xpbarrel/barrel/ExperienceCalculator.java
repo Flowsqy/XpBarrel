@@ -33,39 +33,45 @@ public class ExperienceCalculator {
         return 9 * level - 158;
     }
 
+    private int getRawLevelFromTotalExperience(int totalExperience) {
+        final double total = totalExperience;
+        final double level;
+        if (totalExperience < 353) {
+            level = Math.sqrt(total + 9d) - 3d;
+        } else if (totalExperience < 1508) {
+            level = 8.1d + Math.sqrt(0.4d * (total - (7839d / 40d)));
+        } else {
+            level = (325d / 18d) + Math.sqrt((2d / 9d) * (total - (54215d / 72d)));
+        }
+        return (int) level;
+    }
+
     @NotNull
     public ExperienceData getTotalExperience(int totalExperience) {
         if (totalExperience < 0) {
             return new ExperienceData(0, 0);
         }
-        final double total = totalExperience;
-        final double level;
-        if (totalExperience < 353) {
-            level = Math.sqrt(total + 9) - 3;
-        } else if (totalExperience < 1508) {
-            level = 8.1 + Math.sqrt(0.4 * (total - (7839 / 40)));
-        } else {
-            level = (325 / 18) + Math.sqrt((2 / 9) * (total - (54215 / 72)));
-        }
-        final int exactLevel = (int) level;
-        final int totalExperienceOfLevel = getTotalExpRequiredToLevel(exactLevel);
-        final int totalExperienceOfNextLevel = totalExperienceOfLevel + getExpRequiredToLevelUp(exactLevel);
+        int level = getRawLevelFromTotalExperience(totalExperience);
+        int totalExperienceOfLevel = getTotalExpRequiredToLevel(level);
+        final int totalExperienceOfNextLevel = totalExperienceOfLevel + getExpRequiredToLevelUp(level);
+
         if (totalExperience < totalExperienceOfLevel) {
-            final int totalExperienceOfPreviousLevel = getTotalExpRequiredToLevel(exactLevel - 1);
+            final int totalExperienceOfPreviousLevel = totalExperienceOfLevel - getExpRequiredToLevelUp(level - 1);
             if (totalExperience < totalExperienceOfPreviousLevel) {
                 return new ExperienceData(0, totalExperience);
             }
-            return new ExperienceData(exactLevel - 1, totalExperience - totalExperienceOfPreviousLevel);
-        }
-        if (totalExperience >= totalExperienceOfNextLevel) {
+            level--;
+            totalExperienceOfLevel = totalExperienceOfPreviousLevel;
+        } else if (totalExperience >= totalExperienceOfNextLevel) {
             final int totalExperienceOfNextNextLevel = totalExperienceOfNextLevel
-                    + getExpRequiredToLevelUp(exactLevel + 1);
+                    + getExpRequiredToLevelUp(level + 1);
             if (totalExperience >= totalExperienceOfNextNextLevel) {
                 return new ExperienceData(0, totalExperience);
             }
-            return new ExperienceData(exactLevel + 1, totalExperience - totalExperienceOfNextLevel);
+            level++;
+            totalExperienceOfLevel = totalExperienceOfNextLevel;
         }
-        return new ExperienceData(exactLevel, totalExperienceOfLevel - totalExperience);
+        return new ExperienceData(level, totalExperience - totalExperienceOfLevel);
     }
 
     // Mimic mojang floor method to ensure correctness
