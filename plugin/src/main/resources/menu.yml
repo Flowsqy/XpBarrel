@@ -1,5 +1,5 @@
 main-menu:
-  name: "&cXpBarrel"
+  name: "&5XpBarrel"
   line: 3
   items:
     barrel:
@@ -7,3 +7,68 @@ main-menu:
       - 13
       item:
         type: barrel
+        name: " "
+        lore:
+        - "&r&cExperience: &7%level% levels and %experience% xp"
+        - "&r&7(%total-experience% total experience)"
+    close:
+      slots:
+      - 18
+      item:
+        type: barrier
+        name: "&cFermer"
+      close: true
+    put-1-level:
+      slots:
+      - 3
+      item:
+        type: iron_nugget
+        name: "Put 1 level"
+      experience:
+        type: put
+        value: 1
+    put-10-level:
+      slots:
+      - 4
+      item:
+        type: iron_ingot
+        name: "Put 10 levels"
+      experience:
+        type: put
+        value: 10
+    put-all-level:
+      slots:
+      - 5
+      item:
+        type: iron_block
+        name: "Put all levels"
+      experience:
+        type: put
+        all: true
+    take-1-level:
+      slots:
+      - 21
+      item:
+        type: gold_nugget
+        name: "Take 1 level"
+      experience:
+        type: take
+        value: 1
+    take-10-level:
+      slots:
+      - 22
+      item:
+        type: gold_ingot
+        name: "Take 10 levels"
+      experience:
+        type: take
+        value: 10
+    take-all-level:
+      slots:
+      - 23
+      item:
+        type: gold_block
+        name: "Take all levels"
+      experience:
+        type: take
+        all: true
