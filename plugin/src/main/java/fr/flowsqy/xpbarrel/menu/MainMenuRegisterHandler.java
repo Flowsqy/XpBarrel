@@ -92,8 +92,9 @@ public class MainMenuRegisterHandler implements RegisterHandler {
                     final var expCalculator = new ExperienceCalculator();
                     Bukkit.getScheduler().runTask(plugin, () -> {
                         final int playerLevel = player.getLevel();
+                        final int xpNeededForNextLevel = expCalculator.getExpRequiredToLevelUp(playerLevel);
                         final int playerXpPoints = expCalculator.getTotalExpRequiredToLevel(playerLevel)
-                                + expCalculator.getExperienceFromProgression(playerLevel, player.getExp());
+                                + expCalculator.getExperienceFromProgression(xpNeededForNextLevel, player.getExp());
                         xpBarrel.put(playerXpPoints);
                         player.setExp(0f);
                         player.setLevel(0);
@@ -147,8 +148,9 @@ public class MainMenuRegisterHandler implements RegisterHandler {
                     final var expCalculator = new ExperienceCalculator();
                     Bukkit.getScheduler().runTask(plugin, () -> {
                         final int playerLevel = player.getLevel();
+                        final int xpNeededToLevelUp = expCalculator.getExpRequiredToLevelUp(playerLevel);
                         final int playerXpPoints = expCalculator.getTotalExpRequiredToLevel(playerLevel)
-                                + expCalculator.getExperienceFromProgression(playerLevel, player.getExp());
+                                + expCalculator.getExperienceFromProgression(xpNeededToLevelUp, player.getExp());
                         if (playerXpPoints <= value) {
                             xpBarrel.put(playerXpPoints);
                             player.setExp(0f);
@@ -202,7 +204,9 @@ public class MainMenuRegisterHandler implements RegisterHandler {
                 final var expCalculator = new ExperienceCalculator();
                 Bukkit.getScheduler().runTask(plugin, () -> {
                     final int playerLevel = player.getLevel();
-                    final int progressionXp = expCalculator.getExperienceFromProgression(playerLevel, player.getExp());
+                    final int xpNeededToLevelUp = expCalculator.getExpRequiredToLevelUp(playerLevel);
+                    final int progressionXp = expCalculator.getExperienceFromProgression(xpNeededToLevelUp,
+                            player.getExp());
                     if (value >= playerLevel) {
                         xpBarrel.put(expCalculator.getTotalExpRequiredToLevel(playerLevel) + progressionXp);
                         player.setExp(0f);
@@ -235,9 +239,12 @@ public class MainMenuRegisterHandler implements RegisterHandler {
             }
             final var expCalculator = new ExperienceCalculator();
             Bukkit.getScheduler().runTask(plugin, () -> {
-                int experienceToTake = player.getExpToLevel();
+                final int playerLevel = player.getLevel();
+                final int xpNeededToLevelUp = expCalculator.getExpRequiredToLevelUp(playerLevel);
+                final int progressionXp = expCalculator.getExperienceFromProgression(xpNeededToLevelUp,
+                        player.getExp());
+                int experienceToTake = xpNeededToLevelUp - progressionXp;
                 if (value > 1) {
-                    final int playerLevel = player.getLevel();
                     experienceToTake += expCalculator.getTotalExpRequiredToLevel(playerLevel + value)
                             - expCalculator.getTotalExpRequiredToLevel(playerLevel + 1);
                 }
