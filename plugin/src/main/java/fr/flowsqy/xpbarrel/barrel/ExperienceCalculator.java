@@ -15,9 +15,9 @@ public class ExperienceCalculator {
             return level * (level + 6);
         }
         if (level < 32) {
-            return ((level * (5 * level - 81)) >>> 1) + 360;
+            return ((level * (5 * level - 81)) >> 1) + 360;
         }
-        return ((level * (9 * level - 325)) >>> 1) + 2220;
+        return ((level * (9 * level - 325)) >> 1) + 2220;
     }
 
     public int getExpRequiredToLevelUp(int level) {
@@ -68,8 +68,14 @@ public class ExperienceCalculator {
         return new ExperienceData(exactLevel, totalExperienceOfLevel - totalExperience);
     }
 
-    public int getExperienceFromProgression(int level, float progression) {
-        return (int) Math.floor(getExpRequiredToLevelUp(level) * progression);
+    // Mimic mojang floor method to ensure correctness
+    private int floor(float f) {
+        final int i = (int) f;
+        return f < (float) i ? i - 1 : i;
+    }
+
+    public int getExperienceFromProgression(int xpNeededForNextLevel, float progression) {
+        return floor(progression * (float) xpNeededForNextLevel);
     }
 
 }
