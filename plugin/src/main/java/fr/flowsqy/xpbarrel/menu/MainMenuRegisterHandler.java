@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -156,11 +157,11 @@ public class MainMenuRegisterHandler implements RegisterHandler {
                                 + expCalculator.getExperienceFromProgression(xpNeededForNextLevel, player.getExp());
                         final int remainingXp = xpBarrel.put(playerXpPoints, maxExperience);
                         if (remainingXp != playerXpPoints) {
-
                             player.setExp(0f);
                             player.setLevel(0);
                             player.giveExp(remainingXp);
                         }
+                        player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.1f, 1.0f);
                         for (var watcherId : xpBarrel.getWatchers()) {
                             final var watcher = Bukkit.getPlayer(watcherId);
                             if (watcher == null) {
@@ -182,6 +183,7 @@ public class MainMenuRegisterHandler implements RegisterHandler {
                 }
                 Bukkit.getScheduler().runTask(plugin, () -> {
                     player.giveExp(xpBarrel.takeAll());
+                    player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.1f, 1.0f);
                     for (var watcherId : xpBarrel.getWatchers()) {
                         final var watcher = Bukkit.getPlayer(watcherId);
                         if (watcher == null) {
@@ -298,6 +300,7 @@ public class MainMenuRegisterHandler implements RegisterHandler {
                         player.setLevel(newLevel);
                         player.giveExp(remainingExperience);
                     }
+                    player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.1f, 1.0f);
                     for (var watcherId : xpBarrel.getWatchers()) {
                         final var watcher = Bukkit.getPlayer(watcherId);
                         if (watcher == null) {
@@ -329,6 +332,7 @@ public class MainMenuRegisterHandler implements RegisterHandler {
                             - expCalculator.getTotalExpRequiredToLevel(playerLevel + 1);
                 }
                 player.giveExp(xpBarrel.take(experienceToTake));
+                player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.1f, 1.0f);
                 for (var watcherId : xpBarrel.getWatchers()) {
                     final var watcher = Bukkit.getPlayer(watcherId);
                     if (watcher == null) {
