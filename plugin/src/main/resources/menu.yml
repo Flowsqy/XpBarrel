@@ -24,6 +24,12 @@ main-menu:
       item:
         type: paper
         name: "Show members"
+    members-add:
+      slots:
+      - 1
+      item:
+        type: lime_concrete
+        name: "Add member"
     members-remove:
       slots:
       - 2
