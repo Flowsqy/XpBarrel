@@ -35,7 +35,7 @@ public class MainMenuRegisterHandler implements RegisterHandler {
     private final ConfigurationSection itemSection;
     private final int maxExperience;
     private final ConversationBuilder conversationBuilder;
-    private final String showMembersMessage, notMemberMessage, memberRemovedMessage, askMemberRemoveMessage,
+    private final String showMembersMessage, noMembersMessage, notMemberMessage, memberRemovedMessage, askMemberRemoveMessage,
             notOnlinePlayerMessage, alreadyMemberMessage, memberAddedMessage, askMemberAddMessage;
 
     public MainMenuRegisterHandler(@NotNull XpBarrelPlugin plugin, @NotNull MenuManager menuManager,
@@ -47,6 +47,7 @@ public class MainMenuRegisterHandler implements RegisterHandler {
         this.maxExperience = maxExperience;
         this.conversationBuilder = conversationBuilder;
         showMembersMessage = messageConfig.getMessage("barrel.members.show");
+        noMembersMessage = messageConfig.getMessage("barrel.members.no-members");
         notMemberMessage = messageConfig.getMessage("barrel.members.not-member");
         memberRemovedMessage = messageConfig.getMessage("barrel.members.removed");
         final var askMemberRemoveMessage = messageConfig.getMessage("barrel.members.ask-remove");
@@ -134,10 +135,16 @@ public class MainMenuRegisterHandler implements RegisterHandler {
                         if (showMembersMessage == null) {
                             return;
                         }
-
+                        final var members = xpBarrel.getMembers();
+                        if (members.isEmpty()) {
+                            if (noMembersMessage != null) {
+                                player.sendMessage(noMembersMessage);
+                            }
+                            return;
+                        }
                         boolean first = true;
                         final var sb = new StringBuilder();
-                        for (var member : xpBarrel.getMembers()) {
+                        for (var member : members) {
                             if (first) {
                                 first = false;
                             } else {

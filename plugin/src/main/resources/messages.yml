@@ -17,6 +17,7 @@ barrel:
   can-not-interact-other: "%prefix% &cYou are not allowed to use this barrel"
   members:
     show: "%prefix% &6The members are &a%members"
+    no-members: "%prefix% &cThere is no member"
     not-member: "%prefix% &7%input% &cis not a member"
     removed: "%prefix% &6You successfully removed &a%member%" 
     ask-remove: "%prefix% &6Which member do you want to remove ?"
