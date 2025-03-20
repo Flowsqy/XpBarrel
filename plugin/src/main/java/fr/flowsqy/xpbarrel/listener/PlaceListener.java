@@ -1,5 +1,7 @@
 package fr.flowsqy.xpbarrel.listener;
 
+import java.util.Collections;
+
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -39,7 +41,7 @@ public class PlaceListener implements Listener {
         final var position = BlockPosition.from(placedBlock.getLocation());
         final var world = placedBlock.getWorld().getName();
         final var ownerId = owner == null ? placerPlayer.getUniqueId() : owner;
-        final var xpBarrel = new XpBarrel(ownerId, extractedData.experience());
+        final var xpBarrel = new XpBarrel(ownerId, extractedData.experience(), Collections.emptyList());
         barrelManager.addBarrelAt(world, position, xpBarrel);
     }
 

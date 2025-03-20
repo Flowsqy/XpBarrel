@@ -7,6 +7,7 @@ import fr.flowsqy.abstractmenu.factory.MenuFactory;
 import fr.flowsqy.xpbarrel.barrel.BarrelManager;
 import fr.flowsqy.xpbarrel.barrel.ItemManager;
 import fr.flowsqy.xpbarrel.config.ConfigLoader;
+import fr.flowsqy.xpbarrel.config.MessagesContainer;
 import fr.flowsqy.xpbarrel.listener.BreakListener;
 import fr.flowsqy.xpbarrel.listener.InteractListener;
 import fr.flowsqy.xpbarrel.listener.PlaceListener;
@@ -37,12 +38,15 @@ public class XpBarrelPlugin extends JavaPlugin {
         final var barrelManager = new BarrelManager();
         final var itemManager = new ItemManager(this);
         final var menuManager = new MenuManager(new MenuFactory(this));
-        pluginData = new PluginData(this, barrelManager, itemManager, menuManager);
+        final var breakMC = new BreakListener.BreakMessagesContainer();
+        final var interactMC = new InteractListener.InteractMessagesContainer();
+        pluginData = new PluginData(this, barrelManager, itemManager, menuManager,
+                new MessagesContainer[] { breakMC, interactMC });
         pluginDataLoader.load(pluginData);
         final var pluginManager = getServer().getPluginManager();
-        pluginManager.registerEvents(new BreakListener(barrelManager, itemManager), this);
+        pluginManager.registerEvents(new BreakListener(barrelManager, itemManager, breakMC), this);
         pluginManager.registerEvents(new ProtectListener(barrelManager), this);
-        pluginManager.registerEvents(new InteractListener(this, barrelManager, menuManager), this);
+        pluginManager.registerEvents(new InteractListener(this, barrelManager, menuManager, interactMC), this);
         pluginManager.registerEvents(new PlaceListener(barrelManager, itemManager), this);
     }
 

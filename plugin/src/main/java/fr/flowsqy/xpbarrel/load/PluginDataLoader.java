@@ -32,6 +32,9 @@ public class PluginDataLoader {
         menuManager.load(menuConfig.getMainMenu(plugin, menuManager, config));
         final var commandLoader = new CommandLoader();
         commandLoader.load(pluginData, messageConfig);
+        for (var messagesContainer : pluginData.messagesContainers()) {
+            messagesContainer.loadMessages(messageConfig);
+        }
     }
 
     public void save(@NotNull PluginData pluginData) {

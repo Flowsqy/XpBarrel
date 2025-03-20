@@ -2,6 +2,7 @@ package fr.flowsqy.xpbarrel.config;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,6 +42,11 @@ public class BarrelStorageSaver {
                 positionSection.set("y", position.y());
                 positionSection.set("z", position.z());
                 barrelSection.set("experience", xpBarrel.getExperience());
+                final var members = new LinkedList<>();
+                for (var member : xpBarrel.getMembers()) {
+                    members.add(member.toString());
+                }
+                barrelSection.set("members", members);
             }
             final var configFile = new File(storageDir, loadedBarrelsSnapshot.world() + ".yml");
             try {

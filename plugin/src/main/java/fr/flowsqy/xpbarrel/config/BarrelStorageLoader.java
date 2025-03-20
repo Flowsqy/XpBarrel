@@ -78,7 +78,16 @@ public class BarrelStorageLoader {
                 final int z = positionSection.getInt("z", 0);
                 final var position = new BlockPosition(x, y, z);
                 final int experience = barrelSection.getInt("experience", 0);
-                loadedBarrelsInWorld.put(position, new XpBarrel(owner, experience));
+                final var members = new LinkedList<UUID>();
+                final var rawMembers = barrelSection.getStringList("members");
+                for (var rawMember : rawMembers) {
+                    try {
+                        members.add(UUID.fromString(rawMember));
+                    } catch (Exception e) {
+                        logger.log(Level.WARNING, "Could not parse the member: " + rawMember, e);
+                    }
+                }
+                loadedBarrelsInWorld.put(position, new XpBarrel(owner, experience, members));
             }
         }
         return loadedBarrels;

@@ -12,3 +12,6 @@ command:
     not-player: "%prefix% &7%player% &cis not a connected player"
     success: "%prefix% &a%player% &6received a barrel"
 
+barrel:
+  can-not-break-other: "%prefix% &cYou can't break a barrel that does not belong to you"
+  can-not-interact-other: "%prefix% &cYou are not allowed to use this barrel"

@@ -1,5 +1,6 @@
 package fr.flowsqy.xpbarrel.barrel;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -11,12 +12,14 @@ public class XpBarrel {
 
     private final UUID owner;
     private int experience;
+    private final Set<UUID> members;
     private final UUID watchingId;
     private final Set<UUID> watchers;
 
-    public XpBarrel(@NotNull UUID owner, int experience) {
+    public XpBarrel(@NotNull UUID owner, int experience, @NotNull Collection<UUID> members) {
         this.owner = owner;
         this.experience = experience;
+        this.members = new HashSet<>(members);
         watchingId = UUID.randomUUID();
         watchers = new HashSet<>();
     }
@@ -48,6 +51,18 @@ public class XpBarrel {
         final int possibleNewExperience = experience + amount;
         experience = Math.min(possibleNewExperience, maxExperience);
         return possibleNewExperience - experience;
+    }
+
+    public boolean addMember(@NotNull UUID memberId) {
+        return members.add(memberId);
+    }
+
+    public boolean removeMember(@NotNull UUID memberId) {
+        return members.remove(memberId);
+    }
+
+    public Set<UUID> getMembers() {
+        return Collections.unmodifiableSet(members);
     }
 
     @NotNull
