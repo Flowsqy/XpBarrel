@@ -1,5 +1,12 @@
 max-experience: 2000
 
+conversation:
+  cancel-words:
+  - "quit"
+  - "cancel"
+  - "stop"
+  timeout: 120 
+
 item:
   name: "&rXpBarrel"
   lore:

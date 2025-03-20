@@ -9,6 +9,7 @@ import fr.flowsqy.xpbarrel.config.Config;
 import fr.flowsqy.xpbarrel.config.ConfigLoader;
 import fr.flowsqy.xpbarrel.config.MenuConfig;
 import fr.flowsqy.xpbarrel.config.MessageConfig;
+import fr.flowsqy.xpbarrel.conversation.ConversationBuilderLoader;
 
 public class PluginDataLoader {
 
@@ -28,8 +29,10 @@ public class PluginDataLoader {
         pluginData.itemManager().load(config.getBarrelName(), config.getBarrelLore());
         final var menuConfig = new MenuConfig();
         menuConfig.load(configLoader, plugin, "menu.yml");
+        final var conversationBuilderLoader = new ConversationBuilderLoader();
+        final var conversationBuilder = conversationBuilderLoader.load(plugin, config);
         final var menuManager = pluginData.menuManager();
-        menuManager.load(menuConfig.getMainMenu(plugin, menuManager, config, messageConfig));
+        menuManager.load(menuConfig.getMainMenu(plugin, menuManager, config, messageConfig, conversationBuilder));
         final var commandLoader = new CommandLoader();
         commandLoader.load(pluginData, messageConfig);
         for (var messagesContainer : pluginData.messagesContainers()) {

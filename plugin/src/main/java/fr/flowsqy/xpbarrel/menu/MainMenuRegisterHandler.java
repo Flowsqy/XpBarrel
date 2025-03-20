@@ -1,12 +1,18 @@
 package fr.flowsqy.xpbarrel.menu;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.conversations.ConversationContext;
+import org.bukkit.conversations.Prompt;
+import org.bukkit.conversations.StringPrompt;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
@@ -20,6 +26,7 @@ import fr.flowsqy.xpbarrel.XpBarrelPlugin;
 import fr.flowsqy.xpbarrel.barrel.ExperienceCalculator;
 import fr.flowsqy.xpbarrel.barrel.ExperienceCalculator.ExperienceData;
 import fr.flowsqy.xpbarrel.config.MessageConfig;
+import fr.flowsqy.xpbarrel.conversation.ConversationBuilder;
 
 public class MainMenuRegisterHandler implements RegisterHandler {
 
@@ -27,15 +34,23 @@ public class MainMenuRegisterHandler implements RegisterHandler {
     private final MenuManager menuManager;
     private final ConfigurationSection itemSection;
     private final int maxExperience;
-    private final String showMembersMessage;
+    private final ConversationBuilder conversationBuilder;
+    private final String showMembersMessage, notMemberMessage, memberRemovedMessage, askMemberRemoveMessage;
 
     public MainMenuRegisterHandler(@NotNull XpBarrelPlugin plugin, @NotNull MenuManager menuManager,
-            @NotNull ConfigurationSection inventorySection, int maxExperience, @NotNull MessageConfig messageConfig) {
+            @NotNull ConfigurationSection inventorySection, int maxExperience, @NotNull MessageConfig messageConfig,
+            @NotNull ConversationBuilder conversationBuilder) {
         this.plugin = plugin;
         this.menuManager = menuManager;
         this.itemSection = inventorySection.getConfigurationSection("items");
         this.maxExperience = maxExperience;
+        this.conversationBuilder = conversationBuilder;
         showMembersMessage = messageConfig.getMessage("barrel.members.show");
+        notMemberMessage = messageConfig.getMessage("barrel.members.not-member");
+        memberRemovedMessage = messageConfig.getMessage("barrel.members.removed");
+        final var askMemberRemoveMessage = messageConfig.getMessage("barrel.members.ask-remove");
+        this.askMemberRemoveMessage = askMemberRemoveMessage == null ? "Which member do you want to remove ?"
+                : askMemberRemoveMessage;
     }
 
     @Override
@@ -98,7 +113,7 @@ public class MainMenuRegisterHandler implements RegisterHandler {
                 });
                 break;
             case "members-show":
-                final Consumer<InventoryClickEvent> eventHandler = e -> {
+                final Consumer<InventoryClickEvent> showMembersEventHandler = e -> {
                     final var humanEntity = e.getWhoClicked();
                     if (!(humanEntity instanceof Player player)) {
                         return;
@@ -127,14 +142,90 @@ public class MainMenuRegisterHandler implements RegisterHandler {
                         player.sendMessage(showMembersMessage.replace("%members%", sb.toString()));
                     });
                 };
-                inventory.register(itemBuilder, eventHandler, slots);
+                inventory.register(itemBuilder, showMembersEventHandler, slots);
                 return;
             case "members-remove":
+                itemBuilder.creatorListener(new CreatorAdaptor() {
+
+                    private boolean display;
+
+                    @Override
+                    public void open(Player player) {
+                        final var xpBarrel = menuManager.getWatchedBarrel(player.getUniqueId());
+                        if (xpBarrel == null) {
+                            return;
+                        }
+                        display = xpBarrel.getOwner().equals(player.getUniqueId())
+                                || player.hasPermission("xpbarrel.modify-members-other");
+                    }
+
+                    @Override
+                    public void close(Player player) {
+                        display = false;
+                    }
+
+                    @Override
+                    public Material handleMaterial(Player player, Material material) {
+                        return display ? material : null;
+                    }
+
+                });
+
+                final Consumer<InventoryClickEvent> removeMemberEventHandler = e -> {
+                    final var humanEntity = e.getWhoClicked();
+                    if (!(humanEntity instanceof Player player)) {
+                        return;
+                    }
+                    final var xpBarrel = menuManager.getWatchedBarrel(player.getUniqueId());
+                    if (xpBarrel == null) {
+                        return;
+                    }
+                    Bukkit.getScheduler().runTask(plugin, () -> {
+                        player.closeInventory();
+                        final var inputMap = new HashMap<String, UUID>();
+                        for (var memberId : xpBarrel.getMembers()) {
+                            final var member = Bukkit.getOfflinePlayer(memberId).getName();
+                            if (member == null) {
+                                continue;
+                            }
+                            inputMap.put(member, memberId);
+                        }
+                        final var conversation = conversationBuilder.buildConversation(player, new StringPrompt() {
+
+                            @Override
+                            @Nullable
+                            public Prompt acceptInput(@NotNull ConversationContext context, @Nullable String input) {
+                                final var matchingId = inputMap.get(input);
+                                if (matchingId == null || !xpBarrel.removeMember(matchingId)) {
+                                    if (notMemberMessage != null) {
+                                        context.getForWhom().sendRawMessage(notMemberMessage.replace("%input%", input));
+                                    }
+                                    return Prompt.END_OF_CONVERSATION;
+                                }
+                                if (memberRemovedMessage != null) {
+                                    context.getForWhom()
+                                            .sendRawMessage(memberRemovedMessage.replace("%member%", input));
+                                }
+                                return Prompt.END_OF_CONVERSATION;
+                            }
+
+                            @Override
+                            @NotNull
+                            public String getPromptText(@NotNull ConversationContext context) {
+                                return askMemberRemoveMessage;
+                            }
+                        });
+                        conversation.begin();
+                    });
+                };
+                inventory.register(itemBuilder, removeMemberEventHandler, slots);
                 return;
             case "members-add":
                 return;
         }
-        if (itemSection == null) {
+        if (itemSection == null)
+
+        {
             inventory.register(itemBuilder, slots);
             return;
         }

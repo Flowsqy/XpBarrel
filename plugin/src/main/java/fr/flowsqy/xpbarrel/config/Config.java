@@ -1,7 +1,9 @@
 package fr.flowsqy.xpbarrel.config;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -50,6 +52,15 @@ public class Config {
             rawMax = 15460;
         }
         return new ExperienceCalculator().getTotalExpRequiredToLevel(rawMax);
+    }
+
+    @NotNull
+    public Set<String> getConversationCancelWords() {
+        return new HashSet<>(configuration.getStringList("conversation.cancel-words"));
+    }
+
+    public int getConversationTimeout() {
+        return configuration.getInt("conversation.timeout", 60);
     }
 
 }
