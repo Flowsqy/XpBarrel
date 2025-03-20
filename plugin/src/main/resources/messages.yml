@@ -16,7 +16,7 @@ barrel:
   can-not-break-other: "%prefix% &cYou can't break a barrel that does not belong to you"
   can-not-interact-other: "%prefix% &cYou are not allowed to use this barrel"
   members:
-    show: "%prefix% &6The members are &a%members"
+    show: "%prefix% &6The members are &a%members%"
     no-members: "%prefix% &cThere is no member"
     not-member: "%prefix% &7%input% &cis not a member"
     removed: "%prefix% &6You successfully removed &a%member%" 
@@ -24,4 +24,4 @@ barrel:
     not-online: "%prefix% &7%input% &cis not an online player"
     already-member: "%prefix% &7%member% &cis already a member"
     added: "%prefix% &6You successfully added &a%member%"
-    ask-add: "%prefix% &Which player do you want to add ?"
+    ask-add: "%prefix% &6Which player do you want to add ?"

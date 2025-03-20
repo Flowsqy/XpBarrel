@@ -65,7 +65,11 @@ public class MenuManager {
     }
 
     public void openMainMenu(@NotNull Player player, @NotNull XpBarrel xpBarrel) {
-        mainMenu.open(player, xpBarrel.getWatchingId());
+        mainMenu.open(player,
+                player.getUniqueId().equals(xpBarrel.getOwner())
+                        || player.hasPermission("xpbarrel.modify-members-other")
+                                ? xpBarrel.getOwnerWatchingId()
+                                : xpBarrel.getWatchingId());
     }
 
 }

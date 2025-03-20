@@ -25,6 +25,7 @@ import fr.flowsqy.abstractmenu.item.ItemBuilder;
 import fr.flowsqy.xpbarrel.XpBarrelPlugin;
 import fr.flowsqy.xpbarrel.barrel.ExperienceCalculator;
 import fr.flowsqy.xpbarrel.barrel.ExperienceCalculator.ExperienceData;
+import fr.flowsqy.xpbarrel.barrel.XpBarrel;
 import fr.flowsqy.xpbarrel.config.MessageConfig;
 import fr.flowsqy.xpbarrel.conversation.ConversationBuilder;
 
@@ -35,7 +36,8 @@ public class MainMenuRegisterHandler implements RegisterHandler {
     private final ConfigurationSection itemSection;
     private final int maxExperience;
     private final ConversationBuilder conversationBuilder;
-    private final String showMembersMessage, noMembersMessage, notMemberMessage, memberRemovedMessage, askMemberRemoveMessage,
+    private final String showMembersMessage, noMembersMessage, notMemberMessage, memberRemovedMessage,
+            askMemberRemoveMessage,
             notOnlinePlayerMessage, alreadyMemberMessage, memberAddedMessage, askMemberAddMessage;
 
     public MainMenuRegisterHandler(@NotNull XpBarrelPlugin plugin, @NotNull MenuManager menuManager,
@@ -315,6 +317,7 @@ public class MainMenuRegisterHandler implements RegisterHandler {
                         conversation.begin();
                     });
                 };
+                inventory.register(itemBuilder, addMemberEventHandler, slots);
                 return;
         }
         if (itemSection == null)
@@ -386,13 +389,7 @@ public class MainMenuRegisterHandler implements RegisterHandler {
                             player.giveExp(remainingXp);
                         }
                         player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.1f, 1.0f);
-                        for (var watcherId : xpBarrel.getWatchers()) {
-                            final var watcher = Bukkit.getPlayer(watcherId);
-                            if (watcher == null) {
-                                continue;
-                            }
-                            eventInventory.refresh(xpBarrel.getWatchingId(), watcher);
-                        }
+                        refreshInventory(xpBarrel, eventInventory);
                     });
                 };
             }
@@ -408,13 +405,7 @@ public class MainMenuRegisterHandler implements RegisterHandler {
                 Bukkit.getScheduler().runTask(plugin, () -> {
                     player.giveExp(xpBarrel.takeAll());
                     player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.1f, 1.0f);
-                    for (var watcherId : xpBarrel.getWatchers()) {
-                        final var watcher = Bukkit.getPlayer(watcherId);
-                        if (watcher == null) {
-                            continue;
-                        }
-                        eventInventory.refresh(xpBarrel.getWatchingId(), watcher);
-                    }
+                    refreshInventory(xpBarrel, eventInventory);
                 });
             };
         }
@@ -455,13 +446,7 @@ public class MainMenuRegisterHandler implements RegisterHandler {
                             }
                             player.giveExp(remainingExperience - value);
                         }
-                        for (var watcherId : xpBarrel.getWatchers()) {
-                            final var watcher = Bukkit.getPlayer(watcherId);
-                            if (watcher == null) {
-                                continue;
-                            }
-                            eventInventory.refresh(xpBarrel.getWatchingId(), watcher);
-                        }
+                        refreshInventory(xpBarrel, eventInventory);
                     });
                 };
             }
@@ -477,13 +462,7 @@ public class MainMenuRegisterHandler implements RegisterHandler {
                 }
                 Bukkit.getScheduler().runTask(plugin, () -> {
                     player.giveExp(xpBarrel.take(value));
-                    for (var watcherId : xpBarrel.getWatchers()) {
-                        final var watcher = Bukkit.getPlayer(watcherId);
-                        if (watcher == null) {
-                            continue;
-                        }
-                        eventInventory.refresh(xpBarrel.getWatchingId(), watcher);
-                    }
+                    refreshInventory(xpBarrel, eventInventory);
                 });
             };
         }
@@ -525,13 +504,7 @@ public class MainMenuRegisterHandler implements RegisterHandler {
                         player.giveExp(remainingExperience);
                     }
                     player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.1f, 1.0f);
-                    for (var watcherId : xpBarrel.getWatchers()) {
-                        final var watcher = Bukkit.getPlayer(watcherId);
-                        if (watcher == null) {
-                            continue;
-                        }
-                        eventInventory.refresh(xpBarrel.getWatchingId(), watcher);
-                    }
+                    refreshInventory(xpBarrel, eventInventory);
                 });
             };
         }
@@ -557,15 +530,23 @@ public class MainMenuRegisterHandler implements RegisterHandler {
                 }
                 player.giveExp(xpBarrel.take(experienceToTake));
                 player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.1f, 1.0f);
-                for (var watcherId : xpBarrel.getWatchers()) {
-                    final var watcher = Bukkit.getPlayer(watcherId);
-                    if (watcher == null) {
-                        continue;
-                    }
-                    eventInventory.refresh(xpBarrel.getWatchingId(), watcher);
-                }
+                refreshInventory(xpBarrel, eventInventory);
             });
         };
+    }
+
+    private void refreshInventory(@NotNull XpBarrel xpBarrel, @NotNull EventInventory eventInventory) {
+        for (var watcherId : xpBarrel.getWatchers()) {
+            final var watcher = Bukkit.getPlayer(watcherId);
+            if (watcher == null) {
+                continue;
+            }
+            final var watchingId = watcher.getUniqueId().equals(xpBarrel.getOwner())
+                    || watcher.hasPermission("xpbarrel.modify-members-other")
+                            ? xpBarrel.getOwnerWatchingId()
+                            : xpBarrel.getWatchingId();
+            eventInventory.refresh(watchingId, watcher);
+        }
     }
 
 }

@@ -13,6 +13,7 @@ public class XpBarrel {
     private final UUID owner;
     private int experience;
     private final Set<UUID> members;
+    private final UUID ownerWatchingId;
     private final UUID watchingId;
     private final Set<UUID> watchers;
 
@@ -20,6 +21,7 @@ public class XpBarrel {
         this.owner = owner;
         this.experience = experience;
         this.members = new HashSet<>(members);
+        ownerWatchingId = UUID.randomUUID();
         watchingId = UUID.randomUUID();
         watchers = new HashSet<>();
     }
@@ -63,6 +65,11 @@ public class XpBarrel {
 
     public Set<UUID> getMembers() {
         return Collections.unmodifiableSet(members);
+    }
+
+    @NotNull
+    public UUID getOwnerWatchingId() {
+        return ownerWatchingId;
     }
 
     @NotNull
