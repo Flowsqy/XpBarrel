@@ -27,13 +27,15 @@ public class MenuConfig {
     }
 
     @NotNull
-    public EventInventory getMainMenu(@NotNull XpBarrelPlugin plugin, @NotNull MenuManager menuManager, @NotNull Config config) {
+    public EventInventory getMainMenu(@NotNull XpBarrelPlugin plugin, @NotNull MenuManager menuManager,
+            @NotNull Config config, @NotNull MessageConfig messageConfig) {
         final var inventorySection = configuration.getConfigurationSection("main-menu");
         if (inventorySection == null) {
             return new EventInventory(menuManager.getMenuFactory(), "", 3);
         }
         return EventInventory.deserialize(inventorySection, menuManager.getMenuFactory(),
-                new MainMenuRegisterHandler(plugin, menuManager, inventorySection, config.getMaxExperience()));
+                new MainMenuRegisterHandler(plugin, menuManager, inventorySection, config.getMaxExperience(),
+                        messageConfig));
     }
 
 }

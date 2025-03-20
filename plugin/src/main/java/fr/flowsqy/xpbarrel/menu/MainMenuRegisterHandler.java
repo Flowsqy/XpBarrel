@@ -19,6 +19,7 @@ import fr.flowsqy.abstractmenu.item.ItemBuilder;
 import fr.flowsqy.xpbarrel.XpBarrelPlugin;
 import fr.flowsqy.xpbarrel.barrel.ExperienceCalculator;
 import fr.flowsqy.xpbarrel.barrel.ExperienceCalculator.ExperienceData;
+import fr.flowsqy.xpbarrel.config.MessageConfig;
 
 public class MainMenuRegisterHandler implements RegisterHandler {
 
@@ -26,13 +27,15 @@ public class MainMenuRegisterHandler implements RegisterHandler {
     private final MenuManager menuManager;
     private final ConfigurationSection itemSection;
     private final int maxExperience;
+    private final String showMembersMessage;
 
     public MainMenuRegisterHandler(@NotNull XpBarrelPlugin plugin, @NotNull MenuManager menuManager,
-            @NotNull ConfigurationSection inventorySection, int maxExperience) {
+            @NotNull ConfigurationSection inventorySection, int maxExperience, @NotNull MessageConfig messageConfig) {
         this.plugin = plugin;
         this.menuManager = menuManager;
         this.itemSection = inventorySection.getConfigurationSection("items");
         this.maxExperience = maxExperience;
+        showMembersMessage = messageConfig.getMessage("barrel.members.show");
     }
 
     @Override
@@ -94,6 +97,42 @@ public class MainMenuRegisterHandler implements RegisterHandler {
 
                 });
                 break;
+            case "members-show":
+                final Consumer<InventoryClickEvent> eventHandler = e -> {
+                    final var humanEntity = e.getWhoClicked();
+                    if (!(humanEntity instanceof Player player)) {
+                        return;
+                    }
+                    final var xpBarrel = menuManager.getWatchedBarrel(player.getUniqueId());
+                    if (xpBarrel == null) {
+                        return;
+                    }
+                    Bukkit.getScheduler().runTask(plugin, () -> {
+                        player.closeInventory();
+                        if (showMembersMessage == null) {
+                            return;
+                        }
+
+                        boolean first = true;
+                        final var sb = new StringBuilder();
+                        for (var member : xpBarrel.getMembers()) {
+                            if (first) {
+                                first = false;
+                            } else {
+                                sb.append(", ");
+                            }
+                            final var memberPlayer = Bukkit.getOfflinePlayer(member);
+                            sb.append(memberPlayer.getName() == null ? member.toString() : memberPlayer.getName());
+                        }
+                        player.sendMessage(showMembersMessage.replace("%members%", sb.toString()));
+                    });
+                };
+                inventory.register(itemBuilder, eventHandler, slots);
+                return;
+            case "members-remove":
+                return;
+            case "members-add":
+                return;
         }
         if (itemSection == null) {
             inventory.register(itemBuilder, slots);

@@ -15,3 +15,5 @@ command:
 barrel:
   can-not-break-other: "%prefix% &cYou can't break a barrel that does not belong to you"
   can-not-interact-other: "%prefix% &cYou are not allowed to use this barrel"
+  members:
+    show: "%prefix% &6The members are &a%members"

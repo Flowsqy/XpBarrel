@@ -18,6 +18,12 @@ main-menu:
         type: barrier
         name: "&cFermer"
       close: true
+    members-show:
+      slots:
+      - 0
+      item:
+        type: paper
+        name: "Show members"
     put-1-level:
       slots:
       - 3
