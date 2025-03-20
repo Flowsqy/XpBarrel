@@ -40,6 +40,7 @@ public class MainMenuRegisterHandler implements RegisterHandler {
             case "barrel":
                 itemBuilder.creatorListener(new CreatorAdaptor() {
 
+                    private String ownerName;
                     private ExperienceData experienceData;
                     private int experience;
 
@@ -52,11 +53,16 @@ public class MainMenuRegisterHandler implements RegisterHandler {
                         experience = xpBarrel.getExperience();
                         final var expCalculator = new ExperienceCalculator();
                         experienceData = expCalculator.getTotalExperience(experience);
+                        final var ownerPlayer = Bukkit.getOfflinePlayer(xpBarrel.getOwner());
+                        ownerName = ownerPlayer.getName() == null ? ownerPlayer.getUniqueId().toString()
+                                : ownerPlayer.getName();
                     }
 
                     @Override
                     public void close(Player player) {
                         experienceData = null;
+                        experience = 0;
+                        ownerName = null;
                     }
 
                     @Override
@@ -66,14 +72,16 @@ public class MainMenuRegisterHandler implements RegisterHandler {
                         }
                         final var newLore = new LinkedList<String>();
                         for (var line : lore) {
-                            newLore.add(replaceExperience(line, experienceData, experience));
+                            newLore.add(
+                                    replaceExperience(line, experienceData, experience).replace("%owner%", ownerName));
                         }
                         return newLore;
                     }
 
                     @Override
                     public String handleName(Player player, String name) {
-                        return name == null ? null : replaceExperience(name, experienceData, experience);
+                        return name == null ? null
+                                : replaceExperience(name, experienceData, experience).replace("%owner%", ownerName);
                     }
 
                     private String replaceExperience(@NotNull String original, @NotNull ExperienceData experienceData,
